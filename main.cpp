@@ -7,7 +7,8 @@
 using namespace std;
 
 
-class Tag {
+class Tag 
+{
 private:
     string mTagName;
     map<string, string> mAttributes;
@@ -20,11 +21,28 @@ public:
     static Tag readHRML();
 };
 
-int main() {
+int main() 
+{
     /* Enter your code here. Read input from STDIN. Print output to STDOUT */
     int N, Q;
     cin >> N;
     cin >> Q;
+
+    vector<string> HRML;
+    vector<string> queries;
+    string line;
+    getline(cin, line);
+    for (int i = 0; i < N; i++) 
+    {
+        getline(cin, line);
+        HRML.push_back(line);
+    }
+
+    for (int i = 0; i < Q; i++) 
+    {
+        getline(cin, line);
+        queries.push_back(line);
+    }
     
     return 0;
 }
