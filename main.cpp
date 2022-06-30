@@ -41,8 +41,11 @@ public:
     void addAttributes(string attributeName, string attributeValue);
 
     vector<Tag> getChildren();
+    string getName();
+    string getAttrValue(string attributeName);
     
     static vector<Tag> readHRML(queue<string> hrml);
+    static string queryHRML(vector<Tag> hrml, string query);
 };
 
 Tag::Tag(string tagName) : mTagName(tagName) {}
@@ -192,6 +195,45 @@ map<string, string> Tag::readAttributes(string tagLine)
     return attributes;
 }
 
+string Tag::queryHRML(vector<Tag> hrml, string query)
+{
+    if (query.find('.') == -1)
+    {
+        size_t tildePos = query.find('~');
+        string tagName = query.substr(0, tildePos);
+
+        for (Tag tag : hrml) 
+        {
+            if (tag.getName() == tagName)
+            {
+                size_t n = query.size();
+                string attrName = query.substr(tildePos + 1, n - tildePos + 1);   
+                return tag.getAttrValue(attrName);
+            }
+        }
+        return "Not Found!";
+
+    }
+    else 
+    {
+        size_t dotPos = query.find('.');
+        string tagName = query.substr(0, dotPos);
+        for (Tag tag : hrml)
+        {
+            if (tag.getName() == tagName)
+            {
+                vector<Tag> children = tag.getChildren();
+                size_t n = query.size();
+                string subQuery = query.substr(dotPos + 1, n - dotPos + 1);
+                return queryHRML(children, subQuery);
+            }
+            
+        }
+        return "Not Found!";
+    }
+    
+}
+
 void Tag::addAttributes(string name, string value)
 {
     mAttributes[name] = value;
@@ -210,6 +252,20 @@ void Tag::addChild(Tag child)
 vector<Tag> Tag::getChildren()
 {
     return mChildren;
+}
+
+string Tag::getName()
+{
+    return mTagName;
+}
+
+string Tag::getAttrValue(string attributeName)
+{
+    if (mAttributes.find(attributeName) != mAttributes.end())
+    {
+        return mAttributes[attributeName];
+    }
+    return "Not Found!";
 }
 
 int main() 
@@ -233,6 +289,15 @@ int main()
     {
         getline(cin, line);
         queries.push(line);
+    }
+
+
+    vector<Tag> hrml = Tag::readHRML(HRML);
+    while (!queries.empty())
+    {
+        string query = queries.front();
+        cout << Tag::queryHRML(hrml, query) << endl;
+        queries.pop();
     }
 
     return 0;
