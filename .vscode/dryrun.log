@@ -1,0 +1,6 @@
+make --dry-run --always-make --keep-going --print-directory
+make: Entering directory '/home/thapelo/Documents/Source/Learn/Hackerrank_Attribute_Parser'
+make: Leaving directory '/home/thapelo/Documents/Source/Learn/Hackerrank_Attribute_Parser'
+ 
+make: *** No targets specified and no makefile found.  Stop.
+
